@@ -4,8 +4,11 @@ import (
 	"math/big"
 )
 
-var zero = big.NewInt(0)
-var two = big.NewInt(2)
+var (
+	zero = big.NewInt(0)
+	one  = big.NewInt(1)
+	two  = big.NewInt(2)
+)
 
 // Gcd calculates the greatest common divisor of a and b using Euclidean algorithm
 func Gcd(a, b *big.Int) big.Int {
@@ -31,13 +34,27 @@ func Gcd(a, b *big.Int) big.Int {
 		b.Rsh(b, 1)
 	}
 
-	var aTemp, bTemp big.Int
+	var g uint
+	g = 0
+	for isModTwoZero(a) && isModTwoZero(b) {
+		a.Rsh(a, 1)
+		b.Rsh(b, 1)
+		g++
+	}
+
+	var aTemp, bTemp, result big.Int
 	aTemp.Abs(a)
 	bTemp.Abs(b)
 	if aTemp.Cmp(&bTemp) == -1 {
-		return gcd(&bTemp, &aTemp)
+		temp := gcd(&bTemp, &aTemp)
+		result.Set(&temp)
+	} else {
+		temp := gcd(&aTemp, &bTemp)
+		result.Set(&temp)
 	}
-	return gcd(&aTemp, &bTemp)
+	result.Lsh(&result, g)
+
+	return result
 }
 
 // gcd(a, b) where a > b
