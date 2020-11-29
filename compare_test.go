@@ -20,7 +20,7 @@ func BenchmarkEuclidean(b *testing.B) {
 
 }
 
-func BenchmarkGolangOfficial(b *testing.B) {
+func BenchmarkGolangStandard(b *testing.B) {
 	testSet := GenRandomInt()
 	var bufInt = big.NewInt(1)
 	b.ResetTimer()
