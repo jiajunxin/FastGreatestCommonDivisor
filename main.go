@@ -36,20 +36,39 @@ func GetRandomOdd(rnd *rand.Rand, n *big.Int) *big.Int {
 	return &ret
 }
 
+// ExploreNum explores if the input number has small factors starting from 3
+func ExploreNum(input *big.Int) {
+	fmt.Println("Begin to explore factors of ", input.String())
+	var temp big.Int
+	var copyInput big.Int
+	copyInput.Set(input)
+	starter := big.NewInt(3)
+
+	for i := 0; i < 10000; i++ {
+		temp.GCD(nil, nil, &copyInput, starter)
+		if temp.Cmp(one) != 0 {
+			fmt.Println("Found one small factor, gcd = ", temp.String(), ", factor = ", starter.String())
+		}
+		copyInput.Div(&copyInput, &temp)
+		starter.Add(starter, two)
+	}
+	fmt.Println("End of exploring factors.")
+}
+
 func main() {
 	fmt.Println("Hello Greatest common divisor")
 	// main function is used to test some large test numbers. Golang benchmark framework can run
 	// limited time.
 	testNum := 10000000
 
-	rng := rand.New(rand.NewSource(189399))
+	rng := rand.New(rand.NewSource(222))
 	var a, b big.Int
 	var gcd = big.NewInt(1)
 	var bufInt = big.NewInt(1)
 
 	start := time.Now()
 	a = *GetRandomOdd(rng, randNumRange)
-
+	ExploreNum(&a)
 	for i := 0; i < testNum; i++ {
 		printProgress(i, testNum)
 
@@ -64,6 +83,7 @@ func main() {
 
 	elapsed := time.Since(start)
 	fmt.Println("Bit length of a = ", a.BitLen())
+	ExploreNum(&a)
 	fmt.Println("Time elapsed = ", elapsed)
 	fmt.Println("Bitlength of gcd = ", gcd.BitLen())
 }
