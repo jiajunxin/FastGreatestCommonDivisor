@@ -10,6 +10,7 @@ const seed = 2020
 const bitLength = 2000
 
 var one = big.NewInt(1)
+var two = big.NewInt(2)
 var randNumRange = big.NewInt(0)
 
 func init() {

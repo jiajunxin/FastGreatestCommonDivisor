@@ -26,35 +26,34 @@ func printProgress(icounter, size int) {
 	}
 }
 
+func GetRandomOdd(rnd *rand.Rand, n *big.Int) *big.Int {
+	var ret, temp big.Int
+	ret.Rand(rnd, n)
+	temp.Mod(&ret, two)
+	if temp.Cmp(one) != 0 {
+		ret.Sub(&ret, one)
+	}
+	return &ret
+}
+
 func main() {
 	fmt.Println("Hello Greatest common divisor")
 	// main function is used to test some large test numbers. Golang benchmark framework can run
 	// limited time.
-	testNum := 10000
+	testNum := 10000000
 
-	rng := rand.New(rand.NewSource(seed))
-	var one = big.NewInt(1)
-	var two = big.NewInt(2)
-	var a, b, temp big.Int
+	rng := rand.New(rand.NewSource(189399))
+	var a, b big.Int
 	var gcd = big.NewInt(1)
 	var bufInt = big.NewInt(1)
 
 	start := time.Now()
-	a.Rand(rng, randNumRange)
-	temp.Mod(&a, two)
-	if temp.Cmp(one) != 0 {
-		a.Sub(&a, one)
-	}
+	a = *GetRandomOdd(rng, randNumRange)
 
 	for i := 0; i < testNum; i++ {
 		printProgress(i, testNum)
 
-		b.Rand(rng, randNumRange)
-		// Make sure b is odd
-		temp.Mod(&b, two)
-		if temp.Cmp(one) != 0 {
-			b.Sub(&b, one)
-		}
+		b = *GetRandomOdd(rng, randNumRange)
 		bufInt.GCD(nil, nil, &a, &b)
 		if bufInt.Cmp(one) != 0 {
 			fmt.Println("Found one factor = ", bufInt.String())
@@ -64,7 +63,7 @@ func main() {
 	}
 
 	elapsed := time.Since(start)
-	fmt.Println("Bit length of a = ", a.String())
+	fmt.Println("Bit length of a = ", a.BitLen())
 	fmt.Println("Time elapsed = ", elapsed)
 	fmt.Println("Bitlength of gcd = ", gcd.BitLen())
 }
