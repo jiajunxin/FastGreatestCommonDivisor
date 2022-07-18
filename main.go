@@ -149,6 +149,34 @@ func TestDifference() {
 	}
 }
 
+func getProduct(length int, rng *rand.Rand) *big.Int {
+	var ret, temp big.Int
+	n := big.NewInt(1000)
+	ret.SetInt64(1)
+	for i := 0; i < length; i++ {
+		temp.Rand(rng, n)
+		ret.Mul(&ret, &temp)
+	}
+	return &ret
+}
+
+// TestProductDifference is used to have a simple test to see the distribution of the difference of two products of random numbers
+func TestProductDifference() {
+	rnd := rand.New(rand.NewSource(999))
+	var a, b *big.Int
+	var difference big.Int
+
+	for i := 0; i < 100000; i++ {
+		printProgress(i, 100000)
+		a = getProduct(100, rnd)
+		b = getProduct(100, rnd)
+		difference.Sub(a, b)
+		difference.Abs(&difference)
+		WriteFileString(difference.String())
+	}
+
+}
+
 func main() {
 	fmt.Println("Hello Greatest common divisor")
 	// main function is used to test some large test numbers. Golang benchmark framework can run
@@ -165,4 +193,5 @@ func main() {
 	// fmt.Println("Average Bitlength of gcd = ", totalLength/round)
 
 	TestDifference()
+	TestProductDifference()
 }
